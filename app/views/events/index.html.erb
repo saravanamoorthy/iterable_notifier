@@ -1,0 +1,11 @@
+<div class="container">
+    <h1>Events</h1>
+    <br/><br/>
+    <%= form_with url: events_path(name: 'Event A'), data: { turbo: false } do |f| %>
+        <%= f.submit 'Create Event A', class: 'btn btn-primary' %>
+    <% end %>
+    <br/><br/><br/>
+    <%= form_with url: events_path(name: 'Event B'), data: { turbo: false } do |f| %>
+        <%= f.submit 'Create Event B', class: 'btn btn-primary' %>
+    <% end %>
+</div>
