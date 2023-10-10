@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'webmock'
 RSpec.describe Iterable::User do
-    context "when creating user with valid params" do
+    context "Creating user with valid params" do
         let(:user) { User.new(first_name: "Saravana", last_name: "Moorthy", phone: "9876543210", email: "testuser@gmail.com") }
         
         it 'should respond with success' do
@@ -24,6 +24,32 @@ RSpec.describe Iterable::User do
             result = Iterable::User.create(user)
             
             expect(result['code']).to eq("Success")
+        end
+    end
+
+    context "Creating user with invalid params" do
+        let(:user) { User.new(first_name: "Saravana", last_name: "Moorthy", phone: "9876543210", email: "") }
+
+        it 'should respond with BadParams' do
+            # Setting up Iterable mock data and expectations
+            stub_request(:post, 'https://api.iterable.com/api/users/update')
+            .with(
+                body: {
+                    email: "",
+                    dataFields: {
+                    first_name: user.first_name, last_name: user.last_name
+                    }
+                }.to_json,
+                headers: {
+                'Api-Key' => Rails.application.credentials.iterable[:api_key],
+                'Content-Type' => 'application/json',
+                },
+            )
+            .to_return(status: 200, body: '{"code": "BadParams"}', headers: {})
+
+            result = Iterable::User.create(user)
+
+            expect(result['code']).to eq("BadParams")
         end
     end
 end
